@@ -1,0 +1,32 @@
+name: hardpoint
+main: com.hardpoint.Plugin
+prefix: HardPoint
+description: Plugin inspired by call of duty hardpoint.
+api-version: 1.8.8
+version: "${project.version}"
+database: false
+author: martinsaison
+commands:
+  hardpoint:
+    description: All hardpoint commands.
+    usage: /hardpoint <commands>
+    # aliases: [hp, hardp]
+
+# permissions:
+#   inferno.*:
+#     description: Gives access to all Inferno commands
+#     children:
+#       inferno.flagrate: true
+#       inferno.burningdeaths: true
+#       inferno.burningdeaths.others: true
+#   inferno.flagrate:
+#     description: Allows you to ignite yourself
+#     default: true
+#   inferno.burningdeaths:
+#     description: Allows you to see how many times you have burned to death
+#     default: true
+#   inferno.burningdeaths.others:
+#     description: Allows you to see how many times others have burned to death
+#     default: op
+#     children:
+#       inferno.burningdeaths: true
