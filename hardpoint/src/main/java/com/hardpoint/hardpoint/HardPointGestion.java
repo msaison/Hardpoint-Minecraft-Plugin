@@ -4,7 +4,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
@@ -15,15 +14,18 @@ import org.bukkit.plugin.Plugin;
 // import com.sk89q.worldedit.bukkit.BukkitPlayer;
 // import com.sk89q.worldedit.regions.Region;
 // import com.sk89q.worldedit.session.SessionManager;
+// import com.sk89q.worldedit.util.formatting.text.Component;
+// import com.sk89q.worldedit.util.formatting.text.format.Style;
 // import com.sk89q.worldedit.world.World;
 
 public class HardPointGestion implements CommandExecutor {
     private Plugin _plugin;
-    private YamlConfiguration _config;
+    private FileManagement _fileManagement;
 
-    public HardPointGestion(Plugin plugin, YamlConfiguration file) {
+
+    public HardPointGestion(Plugin plugin, FileManagement fileManagement) {
         _plugin = plugin;
-        _config = file;
+        _fileManagement = fileManagement;
     }
 
     private void commands_gestion(String[] args, Player player) {
@@ -50,14 +52,18 @@ public class HardPointGestion implements CommandExecutor {
     }
 
     private void Create(Player player, String name) {
-        if (_config.contains("hardPoint." + name)) {
+        _fileManagement.getConfiguration("hardpoint.yml").createSection("test");
+        if (!_fileManagement.getConfiguration("hardpoint.yml").contains("hardPoint")) {
+            _fileManagement.getConfiguration("hardpoint.yml").createSection("hardPoint");
+        }
+        if (_fileManagement.getConfiguration("hardpoint.yml").contains("hardPoint." + name)) {
             player.sendMessage(ChatColor.DARK_RED + (ChatColor.BOLD + name)
                     + (ChatColor.RESET + (ChatColor.DARK_RED + " Already exists!")));
         } else {
-            _config.set("hardPoint." + name + ".location", player.getLocation());
-            _config.set("hardPoint." + name + ".radius", 10);
+            _fileManagement.getConfiguration("hardpoint.yml").set("hardPoint." + name + ".location", player.getLocation());
+            _fileManagement.getConfiguration("hardpoint.yml").set("hardPoint." + name + ".radius", 10);
 
-            _plugin.saveConfig();
+            _fileManagement.saveFile("hardpoint.yml");
             player.sendMessage(ChatColor.DARK_GREEN + "Hardpoint named: " + name + " created!");
         }
     }
@@ -81,6 +87,8 @@ public class HardPointGestion implements CommandExecutor {
     // actor.printError("Please make a region selection first.");
     // return;
     // }
+
+    // // region.getVolume();
     // }
 
     private String helps_string(String command, String argument, String desc) {
@@ -99,15 +107,15 @@ public class HardPointGestion implements CommandExecutor {
     }
 
     private void ShowAllHardpoint(Player player) {
-        if (_config.contains("hardPoint")) {
+        if (_fileManagement.getConfiguration("hardpoint.yml").contains("hardPoint")) {
             player.sendMessage(ChatColor.DARK_PURPLE + "Hardpoint list:");
-            for (String key : _config.getConfigurationSection("hardPoint").getKeys(false)) {
+            for (String key : _fileManagement.getConfiguration("hardpoint.yml").getConfigurationSection("hardPoint").getKeys(false)) {
                 player.sendMessage(ChatColor.LIGHT_PURPLE + key);
             }
         } else {
             player.sendMessage(new String[] {
-                ChatColor.DARK_PURPLE + "No hardpoint configuration have been found. See:",
-                helps_string("create", "<name>", "Create an hardpoint."),
+                    ChatColor.DARK_PURPLE + "No hardpoint configuration have been found. See:",
+                    helps_string("create", "<name>", "Create an hardpoint."),
             });
         }
     }
