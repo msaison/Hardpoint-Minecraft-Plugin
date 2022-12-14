@@ -1,5 +1,7 @@
 package com.hardpoint.hardpoint;
 
+import java.io.File;
+
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -7,16 +9,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
-// import com.sk89q.worldedit.IncompleteRegionException;
-// import com.sk89q.worldedit.LocalSession;
-// import com.sk89q.worldedit.WorldEdit;
-// import com.sk89q.worldedit.bukkit.BukkitAdapter;
-// import com.sk89q.worldedit.bukkit.BukkitPlayer;
-// import com.sk89q.worldedit.regions.Region;
-// import com.sk89q.worldedit.session.SessionManager;
-// import com.sk89q.worldedit.util.formatting.text.Component;
-// import com.sk89q.worldedit.util.formatting.text.format.Style;
-// import com.sk89q.worldedit.world.World;
+import com.hardpoint.hardpoint.management.FileManagement;
+import com.hardpoint.hardpoint.management.RegionManagement;
 
 public class HardPointGestion implements CommandExecutor {
     private Plugin _plugin;
@@ -52,6 +46,7 @@ public class HardPointGestion implements CommandExecutor {
     }
 
     private void Create(Player player, String name) {
+        RegionManagement regionManagement = new RegionManagement(player);
         _fileManagement.getConfiguration("hardpoint.yml").createSection("test");
         if (!_fileManagement.getConfiguration("hardpoint.yml").contains("hardPoint")) {
             _fileManagement.getConfiguration("hardpoint.yml").createSection("hardPoint");
@@ -59,37 +54,18 @@ public class HardPointGestion implements CommandExecutor {
         if (_fileManagement.getConfiguration("hardpoint.yml").contains("hardPoint." + name)) {
             player.sendMessage(ChatColor.DARK_RED + (ChatColor.BOLD + name)
                     + (ChatColor.RESET + (ChatColor.DARK_RED + " Already exists!")));
-        } else {
+        } else if (regionManagement.getRegion() != null){
             _fileManagement.getConfiguration("hardpoint.yml").set("hardPoint." + name + ".location", player.getLocation());
             _fileManagement.getConfiguration("hardpoint.yml").set("hardPoint." + name + ".radius", 10);
 
             _fileManagement.saveFile("hardpoint.yml");
+            regionManagement.saveSchematic(player, name, new File(_plugin.getDataFolder(), "schematics"));
+            // regionManagement.saveRegion(_plugin, name, new BlockArrayClipboard(regionManagement.getRegion()));
             player.sendMessage(ChatColor.DARK_GREEN + "Hardpoint named: " + name + " created!");
+        } else {
+            player.sendMessage("Impossible to create map, please select region first!");
         }
     }
-
-    // WORLD EDIT
-    // private void SelectMap(Player player) {
-    // player.sendMessage("Oui");
-    // BukkitPlayer actor = BukkitAdapter.adapt(player);
-    // SessionManager manager = WorldEdit.getInstance().getSessionManager();
-    // LocalSession localSession = manager.get(actor);
-
-    // Region region; // declare the region variable
-    // // note: not necessarily the player's current world, see the concepts page
-    // World selectionWorld = localSession.getSelectionWorld();
-
-    // try {
-    // if (selectionWorld == null)
-    // throw new IncompleteRegionException();
-    // region = localSession.getSelection(selectionWorld);
-    // } catch (IncompleteRegionException ex) {
-    // actor.printError("Please make a region selection first.");
-    // return;
-    // }
-
-    // // region.getVolume();
-    // }
 
     private String helps_string(String command, String argument, String desc) {
         return ("/hardpoint " + command + " " + (ChatColor.LIGHT_PURPLE + argument)

@@ -1,4 +1,4 @@
-package com.hardpoint.hardpoint;
+package com.hardpoint.hardpoint.management;
 
 import java.io.File;
 import java.io.IOException;
@@ -48,6 +48,13 @@ public class FileManagement {
         }
     }
 
+    // public void saveSchematics(Region region, Plugin plugin, String name) {
+    // File file = new File(plugin.getDataFolder() + File.separator + "schematics",
+    // name);
+    // Schematic schem = new Schematic(region);
+    // schem.save(file, ClipboardFormat.SCHEMATIC);
+    // }
+
     public YamlConfiguration getConfiguration(String fileName) {
         return mConfigurations.get(fileName);
     }
@@ -58,5 +65,9 @@ public class FileManagement {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    } 
+    }
+
+    public File getFile(String fileName) {
+        return mFiles.get(fileName);
+    }
 }

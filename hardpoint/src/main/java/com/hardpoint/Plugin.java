@@ -6,9 +6,8 @@ import java.util.logging.Logger;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.google.common.collect.ImmutableMap;
-
-import com.hardpoint.hardpoint.FileManagement;
 import com.hardpoint.hardpoint.HardPointGestion;
+import com.hardpoint.hardpoint.management.FileManagement;
 
 /*
  * hardpoint java plugin
@@ -19,7 +18,6 @@ public class Plugin extends JavaPlugin {
   public void onEnable() {
 
     Map<String, Boolean> names = ImmutableMap.of(
-        "test.yml", false,
         "hardpoint.yml", false,
         "schematics", true);
     FileManagement fileManagement = new FileManagement(this, names);
